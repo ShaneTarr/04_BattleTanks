@@ -6,7 +6,9 @@ The files included in this Repo are part of the tutorial series, as well as some
 
 Shane Tarr
 
-...
+---
 
 ## Lecture List
 * BT01 Intro, Notes & Assets
+* BT02 Game Design Document (GDD)
+*
