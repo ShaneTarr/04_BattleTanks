@@ -12,3 +12,7 @@ Shane Tarr
 * BT01 Intro, Notes & Assets
 * BT02 Game Design Document (GDD)
 * BT03 Setting Up a GitHub "Repo"
+* BT04 Creating & Deleting Landscapes
+* BT05 & BT06 Landscape Setup, Scaling, and Process
+* BT07 & BT08 Upgrading Ue4 & Using Landscape Layers
+* BT_09 Flat Shading Low Poly Landscapes
