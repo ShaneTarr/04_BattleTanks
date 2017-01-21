@@ -1,10 +1,11 @@
-// Copyright EmbraceIT Ltd.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTank.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
+
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -17,24 +18,37 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::BeginPlay()
 {
-	// so that first fire is after initial reload
+	// So that first first is after initial reload
 	LastFireTime = FPlatformTime::Seconds();
 }
-
-void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
-{
-	if ((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeinSeconds)
-	{
-		FiringState = EFiringState::Reloading;
-	}
-	// TODO Handle aiming and locked states
-}
-
 
 void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
 {
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+{
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	{
+		FiringState = EFiringState::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
+	{
+		FiringState = EFiringState::Locked;
+	}
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel)) { return false; }
+	auto BarrelForward = Barrel->GetForwardVector();
+	return !BarrelForward.Equals(AimDirection, 0.01); // vectors are equal
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
@@ -53,12 +67,12 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 		false,
 		0,
 		0,
-		ESuggestProjVelocityTraceOption::DoNotTrace // Parameter must be present to prevent bug
-		
+		ESuggestProjVelocityTraceOption::DoNotTrace // Paramater must be present to prevent bug
 	);
+
 	if (bHaveAimSolution)
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
 	}
 	// If no solution found do nothing
@@ -67,7 +81,8 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
 	if (!ensure(Barrel) || !ensure(Turret)) { return; }
-	// Work-out difference between current barrel rotation, and AimDirection
+
+	// Work-out difference between current barrel roation, and AimDirection
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
@@ -90,5 +105,6 @@ void UTankAimingComponent::Fire()
 			);
 
 		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
 	}
 }
