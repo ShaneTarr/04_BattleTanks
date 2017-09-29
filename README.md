@@ -9,17 +9,10 @@ Shane Tarr
 ---
 
 ## Lecture List
-* BT01 Intro, Notes & Assets
-* BT02 Game Design Document (GDD)
-* BT03 Setting Up a GitHub "Repo"
-* BT04 Creating & Deleting Landscapes
-
-* BT05 & BT06 Landscape Setup, Scaling, and Process
-
-* BT07 & BT08 Upgrading Ue4
-* Using Landscape Layers
-
+* Using Git LFS
+* Marketing & Markdown
+* Use Git Clean to revert project
 * Update README.md
-
-* BT10 More Lanscaping Tools
 * Fixing .gitignore
+* First Person Character Overview
+* Third Person Character
